@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { motion } from "framer-motion";
-import { Spinner } from "react-bootstrap";  // We will use this for the loading spinner
+import { Spinner } from "react-bootstrap";
 
 const BlogPage = () => {
   const [posts, setPosts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage] = useState(4);
+  const postsPerPage = 4;
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -39,14 +39,14 @@ const BlogPage = () => {
   const handleNextPage = () => {
     if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
-      window.scrollTo(0, 0);  // Smooth scroll to top when the user clicks "Next"
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 
   const handlePrevPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
-      window.scrollTo(0, 0);  // Smooth scroll to top when the user clicks "Previous"
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 
@@ -81,7 +81,18 @@ const BlogPage = () => {
         Blog Posts
       </h1>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12">
+      <motion.div
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10"
+        initial="hidden"
+        animate="visible"
+        variants={{
+          visible: {
+            transition: {
+              staggerChildren: 0.15,
+            },
+          },
+        }}
+      >
         {currentPosts.map((post) => {
           const title = post.title.rendered;
           const imageUrl =
@@ -93,30 +104,28 @@ const BlogPage = () => {
           return (
             <motion.div
               key={post.id}
-              className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 ease-in-out"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.4 }}
+              className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300"
+              variants={{
+                hidden: { opacity: 0, y: 30 },
+                visible: { opacity: 1, y: 0 },
+              }}
             >
               <Link to={postLink}>
                 {imageUrl && (
                   <img
                     src={imageUrl}
                     alt={title}
-                    className="w-full h-48 object-cover rounded-t-lg"
+                    className="w-full h-48 object-cover"
                   />
                 )}
-
                 <div className="p-6">
                   <h2 className="text-xl font-semibold mb-2">{title}</h2>
-                  <p className="text-sm text-gray-500 mb-4">
-                    By {author} | {date}
+                  <p className="text-sm text-gray-500 mb-2">
+                    By {author} • {date}
                   </p>
-
-                  <p className="text-gray-800 mb-4 line-clamp-3">
+                  <p className="text-gray-700 mb-3 text-sm line-clamp-3">
                     {post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, "")}
                   </p>
-
                   <span className="text-blue-600 font-semibold">
                     Read More →
                   </span>
@@ -125,31 +134,33 @@ const BlogPage = () => {
             </motion.div>
           );
         })}
-      </div>
+      </motion.div>
 
       {/* Pagination */}
       <div className="mt-12 text-center">
-        <div className="flex justify-center gap-4">
-          {/* Previous Button */}
+        <div className="flex justify-center items-center gap-6 flex-wrap">
           <motion.button
             onClick={handlePrevPage}
-            className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-all duration-300 disabled:opacity-50"
+            className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-all disabled:opacity-50"
             disabled={currentPage === 1}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            Previous Page
+            Previous
           </motion.button>
 
-          {/* Next Button */}
+          <span className="text-lg font-medium">
+            Page {currentPage} of {totalPages}
+          </span>
+
           <motion.button
             onClick={handleNextPage}
-            className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-all duration-300 disabled:opacity-50"
+            className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-all disabled:opacity-50"
             disabled={currentPage === totalPages}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            Next Page
+            Next
           </motion.button>
         </div>
       </div>

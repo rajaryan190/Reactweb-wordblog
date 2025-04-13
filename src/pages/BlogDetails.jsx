@@ -9,7 +9,6 @@ const BlogDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Function to fix the absolute WordPress ToC anchor links to in-page links
   const fixWordpressAnchors = (html) => {
     return html.replace(
       /https?:\/\/navajowhite-gull-167151\.hostingersite\.com\/[^#]*#/g,
@@ -46,15 +45,14 @@ const BlogDetails = () => {
   const author = post._embedded?.author?.[0]?.name || 'Unknown Author';
   const date = new Date(post.date).toLocaleDateString();
 
-  // Fix the anchor links in the content
   content = fixWordpressAnchors(content);
 
   return (
     <motion.div
-      className="w-full max-w-[60%] mx-auto px-4 sm:px-6 lg:px-8 py-12"
+      className="w-full max-w-[90%] md:max-w-[70%] mx-auto px-4 sm:px-6 lg:px-8 py-12"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.4 }}
+      transition={{ duration: 0.5 }}
     >
       <Helmet>
         <title>{title}</title>
@@ -63,22 +61,22 @@ const BlogDetails = () => {
 
       <Link
         to="/blog"
-        className="text-blue-600 hover:underline text-3xl mb-6 inline-block"
+        className="text-blue-600 hover:underline text-lg mb-6 inline-block"
       >
         ← Back to Blog
       </Link>
 
       <h1
-        className="text-3xl sm:text-4xl font-bold leading-snug mb-2"
+        className="text-3xl sm:text-4xl font-bold leading-snug mb-4"
         dangerouslySetInnerHTML={{ __html: title }}
       />
 
-      <p className="text-xl text-gray-500 mb-6">
+      <p className="text-base text-gray-500 mb-8">
         By {author} • {date}
       </p>
 
       {imageUrl && (
-        <div className="mb-8 rounded-lg overflow-hidden">
+        <div className="mb-10 rounded-xl overflow-hidden">
           <img
             src={imageUrl}
             alt={title}
@@ -87,16 +85,15 @@ const BlogDetails = () => {
         </div>
       )}
 
-      {/* Render the content with fixed anchors */}
       <div
-        className="prose prose-sm sm:prose lg:prose-lg max-w-none text-gray-800"
+        className="prose prose-sm sm:prose lg:prose-lg xl:prose-xl max-w-none text-gray-900"
         dangerouslySetInnerHTML={{ __html: content }}
       />
 
-      {/* Custom Styles for Image Captions */}
       <style jsx>{`
         .prose img {
           margin-bottom: 1.5rem;
+          border-radius: 8px;
         }
 
         .prose figcaption {
@@ -107,27 +104,27 @@ const BlogDetails = () => {
           font-style: italic;
         }
 
-        /* Improve spacing between content */
         .prose p {
-          margin-bottom: 1.5rem; /* Add space between paragraphs */
-          line-height: 1.8; /* Better line height for readability */
+          margin-bottom: 1.5rem;
+          line-height: 1.8;
         }
 
-        .prose ul, .prose ol {
-          margin-bottom: 1.5rem; /* Add space after lists */
+        .prose ul,
+        .prose ol {
+          margin-bottom: 1.5rem;
         }
 
-        /* Add spacing for blockquotes */
         .prose blockquote {
           border-left: 4px solid #ddd;
           padding-left: 1rem;
           margin: 1.5rem 0;
           font-style: italic;
-          color: #6b7280;
+          color: rgb(106, 111, 122);
         }
 
-        /* Add spacing between headings and paragraphs */
-        .prose h2, .prose h3, .prose h4 {
+        .prose h2,
+        .prose h3,
+        .prose h4 {
           margin-top: 2rem;
           margin-bottom: 1rem;
         }
@@ -135,6 +132,27 @@ const BlogDetails = () => {
         .prose h1 {
           margin-top: 3rem;
           margin-bottom: 1rem;
+        }
+
+        /* Responsive Table */
+        .prose table {
+          width: 100%;
+          border-collapse: collapse;
+        }
+
+        .prose th,
+        .prose td {
+          padding: 0.75rem;
+          border: 1px solid #e5e7eb;
+        }
+
+        .prose a {
+          color: #2563eb;
+          text-decoration: underline;
+        }
+
+        .prose a:hover {
+          color: #1d4ed8;
         }
       `}</style>
     </motion.div>
